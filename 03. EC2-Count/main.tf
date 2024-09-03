@@ -22,4 +22,3 @@ resource "aws_instance" "server" {
     Name = "Server-${count.index}"
   }
 }
-
