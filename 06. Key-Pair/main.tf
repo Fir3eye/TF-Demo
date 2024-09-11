@@ -11,6 +11,7 @@ provider "aws" {
   region = "ap-south-1"
 }
 
+
 # RSA key of size 4096 bits
 resource "tls_private_key" "rsa" {
   algorithm = "RSA"
@@ -18,20 +19,20 @@ resource "tls_private_key" "rsa" {
 }
 
 
-resource "aws_key_pair" "public_key" {
-  key_name   = "test_key"
+resource "aws_key_pair" "public" {
+  key_name   = "private"
   public_key = tls_private_key.rsa.public_key_openssh
-
-}
-resource "local_file" "private_key" {
-  content         = tls_private_key.rsa.private_key_openssh
-  filename        = "test_key.pem"
-  file_permission = "0400"
 }
 
+resource "local_file" "private" {
+    filename = "private.pem"
+    content = tls_private_key.rsa.private_key_openssh
+  
+}
 
-resource "aws_instance" "demo" {
-    ami = "ami-0522ab6e1ddcc7055"
-    instance_type = "t2.micro"    
-    key_name = aws_key_pair.public_key.key_name
+resource "aws_instance" "name" {
+  ami           = "ami-0522ab6e1ddcc7055"
+  instance_type = "t2.micro"
+  key_name      = aws_key_pair.public.key_name
+
 }
